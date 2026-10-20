@@ -13,7 +13,8 @@ Zero-knowledge encrypted pastebin. Anonymous, free, MIT licensed.
 ## Architecture
 
 - One Docker image: Express API + built React app (same origin).
-- Dev DB: MongoDB in Docker Compose. Prod DB: MongoDB Atlas M0 (free). Expiry via TTL index.
+- Dev DB: a separate Atlas M0 project (`kryptopaste-dev`, deleted before release). Prod DB: its own Atlas M0 project. Expiry via TTL index.
+- Tests use a throwaway database, never the shared cloud DB (step 10).
 - Pipeline: GitHub Actions (lint, test, build, scan, push to GHCR, deploy to Render).
 - Prod host: Render free web service (sleeps when idle; uptime pinger).
 - Kubernetes: `kind` locally and in CI (production runs on Render; there is no good free managed Kubernetes).
@@ -27,6 +28,7 @@ Zero-knowledge encrypted pastebin. Anonymous, free, MIT licensed.
 - `GET    /api/pastes/:id` returns `{ciphertext, iv}` (deleted if burn-after-read)
 - `DELETE /api/pastes/:id` header `x-delete-token`
 - `GET    /api/health`
+- `GET    /api/ready`       readiness check (database connected)
 
 ## Steps
 
@@ -35,7 +37,7 @@ Zero-knowledge encrypted pastebin. Anonymous, free, MIT licensed.
 | 0   | Foundations         | Repo, docs, tools, Git workflow                           | Intro to DevOps, what DevOps is, what to learn, Git & GitHub |
 | 1   | Setup               | Folders, Express skeleton, env handling                   | Build & deploy an API: Setup                                 |
 | 2   | Code quality        | ESLint + Prettier                                         | ESLint Prettier                                              |
-| 3   | Database            | Mongo in Compose, Mongoose, Paste model, TTL index        | Database setup                                               |
+| 3  | Database | Atlas dev project, Mongoose, Paste model, TTL index | Database setup |
 | 4   | Logger & middleware | Pino (privacy-safe), error handler                        | Logger & Middleware                                          |
 | 5   | Security middleware | helmet, CSP, rate limits, size limits                     | Security Middleware, Warp Setup                              |
 | 6   | Core paste API      | Create, read, burn                                        | API build                                                    |

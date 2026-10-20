@@ -11,6 +11,7 @@ Nobody except people holding the full link can read a paste. This includes the s
 - The server stores only: `id`, `ciphertext`, `iv`, `expiresAt`, `burn`, `deleteTokenHash`.
 - Title, language, and text are all inside the encrypted payload.
 - We never log paste content or tie IPs to pastes.
+- Logs contain only method, route (paste ids hidden), status code, and a request id. No IPs, headers, or bodies.
 
 ## What the server can learn
 
