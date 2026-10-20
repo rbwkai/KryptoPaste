@@ -1,21 +1,25 @@
 import { createApp } from './app.js';
 import { config } from './config.js';
 import { connectDb, disconnectDb } from './db.js';
+import { logger } from './logger.js';
 
 try {
   await connectDb(config.mongodbUri);
-  console.log('database connected');
+  logger.info('database connected');
 } catch (err) {
-  console.error('database connection failed:', err.message);
+  logger.error(
+    { err: { name: err.name, message: err.message } },
+    'database connection failed',
+  );
   process.exit(1);
 }
 
 const server = createApp().listen(config.port, () => {
-  console.log(`listening on port ${config.port}`);
+  logger.info({ port: config.port }, 'server listening');
 });
 
 function shutdown(signal) {
-  console.log(`${signal} received, shutting down`);
+  logger.info({ signal }, 'shutting down');
   server.close(async () => {
     await disconnectDb();
     process.exit(0);
