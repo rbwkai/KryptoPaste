@@ -9,9 +9,11 @@
   },
   "scripts": {
     "dev": "node --watch --env-file=.env src/index.js",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "db:smoke": "node --env-file=.env scripts/smoke-db.js"
   },
   "dependencies": {
-    "express": "^5.3.0"
+    "express": "^5.3.0",
+    "mongoose": "^9.11.2"
   }
 }
