@@ -14,9 +14,16 @@ try {
   process.exit(1);
 }
 
-const server = createApp().listen(config.port, () => {
-  logger.info({ port: config.port }, 'server listening');
-});
+const server = createApp({ trustProxy: config.trustProxy }).listen(
+  config.port,
+  () => {
+    logger.info({ port: config.port }, 'server listening');
+  },
+);
+
+// Drop slow or stuck connections (protects against "slowloris" attacks).
+server.headersTimeout = 10_000;
+server.requestTimeout = 15_000;
 
 function shutdown(signal) {
   logger.info({ signal }, 'shutting down');
