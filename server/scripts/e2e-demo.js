@@ -1,6 +1,6 @@
 import { decryptPaste, encryptPaste } from '../../client/src/crypto.js';
 
-const API = process.env.API_URL || 'http://localhost:3000';
+const API = process.env.API_URL || 'http://localhost:6209';
 
 async function api(path, options) {
   const res = await fetch(`${API}${path}`, {

@@ -22,7 +22,7 @@ An encrypted pastebin where the server can never read your pastes.
 npm install
 cp server/.env.example server/.env
 npm run dev
-curl http://localhost:3000/api/health
+curl http://localhost:6209/api/health
 ```
 
 ## Project layout
