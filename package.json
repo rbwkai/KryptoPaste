@@ -12,7 +12,10 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test": "npm test --ws --if-present",
+    "db:test:up": "docker start kp-test-mongo || docker run -d --name kp-test-mongo -p 127.0.0.1:27018:27017 mongo:7",
+    "db:test:down": "docker rm -f kp-test-mongo"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

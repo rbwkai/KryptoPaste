@@ -42,3 +42,18 @@ A running notebook. One section per step.
 - **Fast hash is fine for random tokens.** Slow hashes (bcrypt, Argon2) are for guessable passwords. A 192-bit random token cannot be guessed.
 - **`Cache-Control: no-store`** stops browsers and proxies from keeping copies.
 - **Do not deploy yet:** no rate limits and no CSP until step 5.
+
+## Step 5: Security middleware
+
+- **Why CSP matters most here:** our key lives in the page URL. Any script that runs on our page can read it. CSP tells the browser to run only scripts from our own server, so an injected script is blocked. Strict by default (`default-src 'none'`), then we allow only what we need.
+- **Strict CSP has costs.** No inline scripts, no inline `style="..."` attributes, no third-party scripts or fonts. The frontend (step 7) must follow these rules. This is easier to do from day one than to fix later.
+- **Defense in depth:** helmet headers + CSP + input validation + rate limits. No single layer is trusted alone.
+- **Helmet** is a ready-made bundle of safe headers. We override only what we need.
+- **No CORS on purpose.** The site and API share one origin, so we add no CORS headers. By default browsers then block other websites from reading our API. In dev, the Vite server will proxy to Express instead of calling it across origins.
+- **Rate limiting order matters:** limiter first, body parsing second, so spammers cost less. Health and readiness checks come before the limiter, because monitors must never be blocked.
+- **`trust proxy`:** behind a load balancer every request seems to come from the proxy's IP. Express can read the real IP from `X-Forwarded-For`, but only if told how many proxies to trust. Too low means all users share one limit. Too high means attackers can fake their IP. We make it a setting (`TRUST_PROXY`) and measure the right number at deploy time.
+- **In-memory limiter:** counters live in RAM, are shared by no one, and reset on restart. Fine for one instance. With several copies (Kubernetes replicas) we would need a shared store. The IPs stay in RAM only and are never logged or saved.
+- **Timeouts:** `headersTimeout` and `requestTimeout` cut off slow connections that try to hold the server busy (slowloris).
+- **Abuse can fill a free database.** Rate limits slow one visitor down, but many visitors could still fill 512 MB. A global storage cap comes later.
+- **`npm audit`** checks dependencies for known holes. It becomes a pipeline step in CI.
+- **Report-only trick:** real teams first ship a CSP as `Content-Security-Policy-Report-Only`, which logs violations without blocking. We start strict because the frontend does not exist yet.
