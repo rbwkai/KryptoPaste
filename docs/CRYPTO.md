@@ -42,7 +42,7 @@ The browser never sends the part after `#` to any server. That is the whole tric
 1. Take `<id>` from the path and `<key>` from `location.hash`.
 2. `GET /api/pastes/<id>` returns `{ ciphertext, iv, burn }`.
 3. Decrypt with the key and the same AAD. If it fails, show "wrong or damaged link".
-4. Clear the key from the address bar with `history.replaceState` (step 7).
+4. For burn-after-read pastes only, remove the key from the address bar with `history.replaceState`. A normal paste keeps its key in the URL, so refresh and bookmarks still work.
 
 ## Formats
 

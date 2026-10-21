@@ -20,14 +20,15 @@ An encrypted pastebin where the server can never read your pastes.
 
 ```bash
 npm install
-cp server/.env.example server/.env
-npm run dev
-curl http://localhost:6209/api/health
+cp server/.env.example server/.env   # then fill in MONGODB_URI
+npm run dev                          # API on :6209
+npm run dev:client                   # frontend on :5173 (second terminal)
 ```
 
 ## Project layout
 
-- `server/` Express API (the React client comes later in `client/`)
+- `server/` Express API
+- `client/` React + Vite frontend
 - `docs/` kickoff notes
 - `ROADMAP.md` what we build, step by step
 - `SECURITY.md` threat model and how to report problems
