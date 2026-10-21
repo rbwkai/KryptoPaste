@@ -82,3 +82,19 @@ A running notebook. One section per step.
 - **Action versions** (`@v4`) are tags. The safer habit is pinning to a commit and letting Dependabot propose updates (step 16).
 - **CI vs CD:** CI checks the code. CD (step 14) ships it. CD only makes sense after CI is trustworthy.
 - **Match versions:** CI uses Node 22. If your Arch Node is newer, an odd bug can appear only in one place. That is a good reason for Docker (step 12): same Node everywhere.
+
+## Step 7: Frontend
+
+- **A CSP-friendly frontend:** no inline `<script>`, no inline `style=""`, no external files. React, Vite and plain CSS files meet that rule easily.
+- **Self-hosted fonts:** Google Fonts would break our CSP and tell Google about every visitor. Fontsource ships fonts as npm packages, and Vite copies them into our own build. `assetsInlineLimit: 0` stops Vite from turning them into `data:` URLs, which the CSP would block.
+- **Dev proxy vs real origin:** in dev, Vite forwards `/api` to Express, so the browser still sees one origin. Later, nginx does the same job. We never need CORS.
+- **`vite preview` with the CSP header** lets us test the production build under the real policy before Docker exists.
+- **StrictMode hazard:** React in dev runs effects twice. A "read" effect would read a burn paste twice and destroy it. We left StrictMode out, with a comment explaining why. General lesson: effects that cause side effects on the server must be safe to run twice.
+- **Untrusted data stays text.** A decrypted paste is attacker-controlled. React shows it as text. We never use `dangerouslySetInnerHTML`. We also check the shape of the decrypted JSON.
+- **Validate the key before calling the server.** A cut-off link would otherwise fetch (and burn) the paste, then fail to decrypt.
+- **Known weakness:** a burn paste opened with a wrong but well-formed key is still destroyed. Fixing it needs a "peek" endpoint and a confirm step. It is on the future list.
+- **Key out of the address bar only for burn pastes.** For normal pastes, keeping the key in the URL means refresh and bookmarks work.
+- **One crypto file.** It lives in the client, and the server tests import it. The tests check the real code, not a copy.
+- **Zero-knowledge is checkable.** DevTools, Network tab: no request ever contains the key.
+- **Delete token not shown yet,** because the delete endpoint does not exist (steps 8 and 9).
+- **Minimal tooling choice:** no React ESLint plugin, so we ignore capitalised "unused" names in client files. We can add the plugin later for hook rules.

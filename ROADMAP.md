@@ -32,26 +32,26 @@ Zero-knowledge encrypted pastebin. Anonymous, free, MIT licensed.
 
 ## Steps
 
-| #   | Step                             | What we build                                                                                                        | DevOps topic                                                 |
-| --- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| 0   | Foundations                      | Repo, docs, tools, Git workflow                                                                                      | Intro to DevOps, what DevOps is, what to learn, Git & GitHub |
-| 1   | Setup                            | Folders, Express skeleton, env handling                                                                              | Build & deploy an API: Setup                                 |
-| 2   | Code quality                     | ESLint + Prettier                                                                                                    | ESLint Prettier                                              |
-| 3   | Database                         | Atlas dev project, Mongoose, Paste model, TTL index                                                                  | Database setup                                               |
-| 4   | Logger & middleware              | Pino (privacy-safe), error handler                                                                                   | Logger & Middleware                                          |
-| 5   | Security middleware              | helmet, CSP, rate limits, size limits                                                                                | Security Middleware, Warp Setup                              |
-| 6   | Crypto contract + core paste API | `docs/CRYPTO.md`, create, read, atomic burn, strict validation                                                       | API build                                                    |
-| 7   | Frontend                         | React + Vite, WebCrypto module (from `client-crypto.js`), create and read pages. Dev: Vite proxies `/api` to Express | Full stack wiring                                            |
-| 8   | Delete tokens                    | `DELETE` endpoint, constant-time token check (token creation already exists from step 6)                             | Authentication I                                             |
-| 9   | Paste CRUD                       | Delete, expiry, burn, limits                                                                                         | The "User CRUD" slot                                         |
-| 10  | Testing (done)                   | Vitest + Supertest, throwaway Mongo, crypto contract tests                                                           | Testing                                                      |
-| 11  | CI (done)                        | GitHub Actions: lint, tests with Mongo service, audit, required checks                                               | CI/CD Pipelines, Build Your First Pipeline                   |
-| 12  | Docker                           | Two Dockerfiles (`api`, `web` with nginx + CSP), Compose, GHCR                                                       | Docker, Dockerization                                        |
-| 13  | Kubernetes                       | kind, two Deployments, Services, Ingress, smoke test in CI                                                           | Kubernetes, Kubernetes Demo                                  |
-| 14  | Go live (CD)                     | Atlas + Render (two services, or a static host for `web`), auto deploy, health checks, uptime pinger                 | Deployment                                                   |
-| 15  | IaC                              | OpenTofu for GitHub, Atlas, Render                                                                                   | Infrastructure as Code                                       |
-| 16  | More DevOps                      | Trivy, Dependabot, CodeQL, rollbacks, monitoring                                                                     | More on DevOps                                               |
-| 17  | Next steps                       | Hardening, optional Vercel/Cloudflare static frontend                                                                | Next Steps                                                   |
+| #   | Step                             | What we build                                                                                                       | DevOps topic                                                 |
+| --- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| 0   | Foundations                      | Repo, docs, tools, Git workflow                                                                                     | Intro to DevOps, what DevOps is, what to learn, Git & GitHub |
+| 1   | Setup                            | Folders, Express skeleton, env handling                                                                             | Build & deploy an API: Setup                                 |
+| 2   | Code quality                     | ESLint + Prettier                                                                                                   | ESLint Prettier                                              |
+| 3   | Database                         | Atlas dev project, Mongoose, Paste model, TTL index                                                                 | Database setup                                               |
+| 4   | Logger & middleware              | Pino (privacy-safe), error handler                                                                                  | Logger & Middleware                                          |
+| 5   | Security middleware              | helmet, CSP, rate limits, size limits                                                                               | Security Middleware, Warp Setup                              |
+| 6   | Crypto contract + core paste API | `docs/CRYPTO.md`, create, read, atomic burn, strict validation                                                      | API build                                                    |
+| 7   | Frontend (done)                  | React + Vite, create and read pages, WebCrypto module shared with server tests. Dev: Vite proxies `/api` to Express | Full stack wiring                                            |
+| 8   | Delete tokens                    | `DELETE` endpoint, constant-time token check (token creation already exists from step 6)                            | Authentication I                                             |
+| 9   | Paste CRUD                       | Delete, expiry, burn, limits                                                                                        | The "User CRUD" slot                                         |
+| 10  | Testing (done)                   | Vitest + Supertest, throwaway Mongo, crypto contract tests                                                          | Testing                                                      |
+| 11  | CI (done)                        | GitHub Actions: lint, tests with Mongo service, audit, required checks                                              | CI/CD Pipelines, Build Your First Pipeline                   |
+| 12  | Docker                           | Two Dockerfiles (`api`, `web` with nginx + CSP), Compose, GHCR                                                      | Docker, Dockerization                                        |
+| 13  | Kubernetes                       | kind, two Deployments, Services, Ingress, smoke test in CI                                                          | Kubernetes, Kubernetes Demo                                  |
+| 14  | Go live (CD)                     | Atlas + Render (two services, or a static host for `web`), auto deploy, health checks, uptime pinger                | Deployment                                                   |
+| 15  | IaC                              | OpenTofu for GitHub, Atlas, Render                                                                                  | Infrastructure as Code                                       |
+| 16  | More DevOps                      | Trivy, Dependabot, CodeQL, rollbacks, monitoring                                                                    | More on DevOps                                               |
+| 17  | Next steps                       | Hardening, optional Vercel/Cloudflare static frontend                                                               | Next Steps                                                   |
 
 ## Security ideas for later
 
