@@ -6,11 +6,11 @@ const base = {
   message: { error: 'rate_limited' },
 };
 
-// Everything under /api: 60 requests per minute per visitor.
+// Everything under /api: 120 requests per minute per visitor.
 export const apiLimiter = rateLimit({
   ...base,
   windowMs: 60 * 1000,
-  limit: 60,
+  limit: 120,
 });
 
 // Creating pastes costs storage: 30 per hour per visitor.
