@@ -24,7 +24,7 @@ Zero-knowledge encrypted pastebin. Anonymous, free, MIT licensed.
 
 ## API
 
-- `POST   /api/pastes` body `{ciphertext, iv, ttl, burn}` returns `{id, deleteToken}`
+- `POST   /api/pastes` body `{ciphertext, iv, ttl, burn}` (`ttl` is `1h`, `1d`, `7d` or `30d`) returns `{id, deleteToken}`
 - `GET    /api/pastes/:id` returns `{ciphertext, iv}` (deleted if burn-after-read)
 - `DELETE /api/pastes/:id` header `x-delete-token`
 - `GET    /api/health`
@@ -32,26 +32,26 @@ Zero-knowledge encrypted pastebin. Anonymous, free, MIT licensed.
 
 ## Steps
 
-| #   | Step                | What we build                                             | DevOps topic                                                 |
-| --- | ------------------- | --------------------------------------------------------- | ------------------------------------------------------------ |
-| 0   | Foundations         | Repo, docs, tools, Git workflow                           | Intro to DevOps, what DevOps is, what to learn, Git & GitHub |
-| 1   | Setup               | Folders, Express skeleton, env handling                   | Build & deploy an API: Setup                                 |
-| 2   | Code quality        | ESLint + Prettier                                         | ESLint Prettier                                              |
-| 3   | Database            | Atlas dev project, Mongoose, Paste model, TTL index       | Database setup                                               |
-| 4   | Logger & middleware | Pino (privacy-safe), error handler                        | Logger & Middleware                                          |
-| 5   | Security middleware | helmet, CSP, rate limits, size limits                     | Security Middleware, Warp Setup                              |
-| 6   | Core paste API      | Create, read, burn                                        | API build                                                    |
-| 7   | Frontend            | React + Vite, WebCrypto, link in `#fragment`              | Full stack wiring                                            |
-| 8   | Delete tokens       | Random token, hashed, constant-time compare               | Authentication I                                             |
-| 9   | Paste CRUD          | Delete, expiry, burn, limits                              | The "User CRUD" slot                                         |
-| 10  | Testing             | Crypto tests, API tests                                   | Testing                                                      |
-| 11  | CI                  | GitHub Actions: lint, test, build                         | CI/CD Pipelines, Build Your First Pipeline                   |
-| 12  | Docker              | Multi-stage Dockerfile, Compose, GHCR                     | Docker, Dockerization                                        |
-| 13  | Kubernetes          | kind, manifests, smoke test in CI                         | Kubernetes, Kubernetes Demo                                  |
-| 14  | Go live (CD)        | Atlas + Render, auto deploy, health checks, uptime pinger | Deployment                                                   |
-| 15  | IaC                 | OpenTofu for GitHub, Atlas, Render                        | Infrastructure as Code                                       |
-| 16  | More DevOps         | Trivy, Dependabot, CodeQL, rollbacks, monitoring          | More on DevOps                                               |
-| 17  | Next steps          | Hardening, optional Vercel/Cloudflare static frontend     | Next Steps                                                   |
+| #   | Step                             | What we build                                                                            | DevOps topic                                                 |
+| --- | -------------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| 0   | Foundations                      | Repo, docs, tools, Git workflow                                                          | Intro to DevOps, what DevOps is, what to learn, Git & GitHub |
+| 1   | Setup                            | Folders, Express skeleton, env handling                                                  | Build & deploy an API: Setup                                 |
+| 2   | Code quality                     | ESLint + Prettier                                                                        | ESLint Prettier                                              |
+| 3   | Database                         | Atlas dev project, Mongoose, Paste model, TTL index                                      | Database setup                                               |
+| 4   | Logger & middleware              | Pino (privacy-safe), error handler                                                       | Logger & Middleware                                          |
+| 5   | Security middleware              | helmet, CSP, rate limits, size limits                                                    | Security Middleware, Warp Setup                              |
+| 6   | Crypto contract + core paste API | `docs/CRYPTO.md`, create, read, atomic burn, strict validation                           | API build                                                    |
+| 7   | Frontend                         | React + Vite, WebCrypto, link in `#fragment`                                             | Full stack wiring                                            |
+| 8   | Delete tokens                    | `DELETE` endpoint, constant-time token check (token creation already exists from step 6) | Authentication I                                             |
+| 9   | Paste CRUD                       | Delete, expiry, burn, limits                                                             | The "User CRUD" slot                                         |
+| 10  | Testing                          | Crypto tests, API tests                                                                  | Testing                                                      |
+| 11  | CI                               | GitHub Actions: lint, test, build                                                        | CI/CD Pipelines, Build Your First Pipeline                   |
+| 12  | Docker                           | Multi-stage Dockerfile, Compose, GHCR                                                    | Docker, Dockerization                                        |
+| 13  | Kubernetes                       | kind, manifests, smoke test in CI                                                        | Kubernetes, Kubernetes Demo                                  |
+| 14  | Go live (CD)                     | Atlas + Render, auto deploy, health checks, uptime pinger                                | Deployment                                                   |
+| 15  | IaC                              | OpenTofu for GitHub, Atlas, Render                                                       | Infrastructure as Code                                       |
+| 16  | More DevOps                      | Trivy, Dependabot, CodeQL, rollbacks, monitoring                                         | More on DevOps                                               |
+| 17  | Next steps                       | Hardening, optional Vercel/Cloudflare static frontend                                    | Next Steps                                                   |
 
 ## Security ideas for later
 

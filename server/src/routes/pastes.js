@@ -3,6 +3,7 @@ import { HttpError } from '../middleware/error-handler.js';
 import { Paste } from '../models/paste.js';
 import { ID_PATTERN, parseCreateBody } from '../paste-rules.js';
 import { createDeleteToken } from '../tokens.js';
+import { createLimiter } from '../middleware/rate-limit.js';
 
 export const pastesRouter = Router();
 
@@ -12,7 +13,7 @@ pastesRouter.use((_req, res, next) => {
   next();
 });
 
-pastesRouter.post('/', async (req, res) => {
+pastesRouter.post('/', createLimiter, async (req, res) => {
   const { ciphertext, iv, ttlSeconds, burn } = parseCreateBody(req.body);
   const { token, hash } = createDeleteToken();
 

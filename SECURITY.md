@@ -12,6 +12,7 @@ Nobody except people holding the full link can read a paste. This includes the s
 - Title, language, and text are all inside the encrypted payload.
 - We never log paste content or tie IPs to pastes.
 - Logs contain only method, route (paste ids hidden), status code, and a request id. No IPs, headers, or bodies.
+- The full encryption design is in `docs/CRYPTO.md`.
 
 ## What the server can learn
 
