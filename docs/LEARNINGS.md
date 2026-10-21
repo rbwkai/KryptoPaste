@@ -57,3 +57,28 @@ A running notebook. One section per step.
 - **Abuse can fill a free database.** Rate limits slow one visitor down, but many visitors could still fill 512 MB. A global storage cap comes later.
 - **`npm audit`** checks dependencies for known holes. It becomes a pipeline step in CI.
 - **Report-only trick:** real teams first ship a CSP as `Content-Security-Policy-Report-Only`, which logs violations without blocking. We start strict because the frontend does not exist yet.
+
+## Steps 10-11: Testing and CI
+
+**Testing**
+
+- **Unit tests** are fast and need no database (validation, tokens, crypto). **Integration tests** call the real API with a real database. We have both.
+- **Tests never touch the real database.** They use a throwaway local Mongo. `test-db.js` refuses to run if the URI looks like Atlas or the database name has no "test" in it, because a typo in an env var must never wipe real data.
+- **Test the scary parts on purpose:** the burn race (10 simultaneous readers, exactly one wins), expired pastes that the TTL cleaner has not removed yet, tampered ciphertext, wrong keys, NoSQL-style input.
+- **Each test starts clean.** `beforeEach` empties the collection, so tests cannot depend on each other.
+- **Limiter counters live in memory per test file,** so the rate limit test has its own file.
+- **Tests are living documentation.** `crypto-contract.test.js` checks the sizes and rules written in `docs/CRYPTO.md`. If the doc and the code disagree, a test goes red.
+
+**CI**
+
+- **CI** means a robot builds and tests every change. A red check means "do not merge".
+- **`npm ci` vs `npm install`:** `ci` installs exactly what the lock file says and fails if it is out of date. Always use `ci` in pipelines, so builds are repeatable.
+- **Caching** (`cache: npm`) saves minutes by reusing downloaded packages.
+- **Service container:** the pipeline starts a real MongoDB next to the job, the same one we use locally.
+- **Least privilege:** `permissions: contents: read` means a compromised step cannot push code or change the repo.
+- **`concurrency`** cancels old runs when you push again. It saves free minutes.
+- **Required checks + branch rules** turn CI from advice into a gate. This is what makes `main` always work.
+- **Audit job is not required,** because new advisories can turn it red without any change from us.
+- **Action versions** (`@v4`) are tags. The safer habit is pinning to a commit and letting Dependabot propose updates (step 16).
+- **CI vs CD:** CI checks the code. CD (step 14) ships it. CD only makes sense after CI is trustworthy.
+- **Match versions:** CI uses Node 22. If your Arch Node is newer, an odd bug can appear only in one place. That is a good reason for Docker (step 12): same Node everywhere.

@@ -1,4 +1,4 @@
-import { decryptPaste, encryptPaste } from './client-crypto.js';
+import { decryptPaste, encryptPaste } from '../../client/src/crypto.js';
 
 const API = process.env.API_URL || 'http://localhost:3000';
 

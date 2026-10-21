@@ -4,7 +4,7 @@ import {
   encryptPaste,
   fromB64u,
   toB64u,
-} from '../scripts/client-crypto.js';
+} from '../../client/src/crypto.js';
 
 describe('crypto contract v1', () => {
   it('round-trips unicode text', async () => {
