@@ -46,13 +46,13 @@ The browser never sends the part after `#` to any server. That is the whole tric
 
 ## Formats
 
-| Thing | Size | Encoding |
-|-------|------|----------|
-| key | 32 bytes | base64url, 43 chars, only in the `#fragment` |
-| iv | 12 bytes | base64url, 16 chars |
-| ciphertext | up to 100 KB | base64url, max 136,534 chars |
-| paste id | 16 random bytes | base64url, 22 chars |
-| delete token | 24 random bytes | base64url, 32 chars |
+| Thing        | Size            | Encoding                                     |
+| ------------ | --------------- | -------------------------------------------- |
+| key          | 32 bytes        | base64url, 43 chars, only in the `#fragment` |
+| iv           | 12 bytes        | base64url, 16 chars                          |
+| ciphertext   | up to 100 KB    | base64url, max 136,534 chars                 |
+| paste id     | 16 random bytes | base64url, 22 chars                          |
+| delete token | 24 random bytes | base64url, 32 chars                          |
 
 ## What the server does
 

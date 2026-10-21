@@ -1,7 +1,8 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import { requestLogger } from './middleware/request-logger.js';
 import { errorHandler, notFound } from './middleware/error-handler.js';
+import { requestLogger } from './middleware/request-logger.js';
+import { pastesRouter } from './routes/pastes.js';
 
 export function createApp() {
   const app = express();
@@ -20,6 +21,8 @@ export function createApp() {
       .status(ready ? 200 : 503)
       .json({ status: ready ? 'ready' : 'not_ready' });
   });
+
+  app.use('/api/pastes', pastesRouter);
 
   app.use('/api', notFound);
   app.use(errorHandler); // must be last

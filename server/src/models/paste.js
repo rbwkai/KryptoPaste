@@ -8,8 +8,8 @@ const pasteSchema = new mongoose.Schema(
       type: String,
       default: () => randomBytes(16).toString('base64url'),
     },
-    ciphertext: { type: String, required: true }, // base64, encrypted in the browser
-    iv: { type: String, required: true }, // base64, 12 random bytes
+    ciphertext: { type: String, required: true }, // base64url, encrypted in the browser
+    iv: { type: String, required: true }, // base64url, 12 random bytes
     burn: { type: Boolean, default: false }, // delete after first read
     deleteTokenHash: { type: String, required: true }, // hash only, never the token
     expiresAt: { type: Date, required: true },
