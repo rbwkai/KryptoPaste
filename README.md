@@ -1,5 +1,7 @@
 # KryptoPaste
 
+![CI](https://github.com/rbwkai/KryptoPaste/actions/workflows/ci.yml/badge.svg)
+
 An encrypted pastebin where the server can never read your pastes.
 
 - Your browser encrypts the text (AES-256-GCM) before sending it.

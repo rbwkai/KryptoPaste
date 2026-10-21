@@ -13,6 +13,9 @@ Nobody except people holding the full link can read a paste. This includes the s
 - We never log paste content or tie IPs to pastes.
 - Logs contain only method, route (paste ids hidden), status code, and a request id. No IPs, headers, or bodies.
 - The full encryption design is in `docs/CRYPTO.md`.
+- Strict CSP: only our own scripts run. No inline scripts, no third-party scripts, no framing. Referrer is never sent.
+- Rate limits per visitor, held in memory only (never written to disk or logs). Request size and time limits protect against slow or huge requests.
+- No CORS: other websites cannot read our API from a browser.
 
 ## What the server can learn
 
