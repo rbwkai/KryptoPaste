@@ -1,0 +1,56 @@
+server {
+  listen 8080;
+  server_name _;
+  server_tokens off;
+
+  root /usr/share/nginx/html;
+  index index.html;
+
+  # PRIVACY: never log visitor IPs next to the pastes they open.
+  access_log off;
+  error_log /dev/stderr warn;
+
+  # Security headers. This CSP is the one that really protects the page,
+  # because nginx now serves the HTML. Keep it in sync with the API's helmet CSP.
+  # Note: add_header in a location block would REPLACE these, so locations below
+  # never use add_header (they use `expires` instead).
+  add_header Content-Security-Policy "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'" always;
+  add_header Referrer-Policy "no-referrer" always;
+  add_header X-Content-Type-Options "nosniff" always;
+  add_header X-Frame-Options "DENY" always;
+  add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()" always;
+  add_header Cross-Origin-Opener-Policy "same-origin" always;
+  add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+  # Health check for Docker and Kubernetes.
+  location = /healthz {
+    default_type text/plain;
+    return 200 "ok\n";
+  }
+
+  # Everything under /api goes to the Node container.
+  location /api/ {
+    proxy_pass ${API_UPSTREAM};
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    client_max_body_size 200k;
+    proxy_read_timeout 15s;
+  }
+
+  # Built files have a hash in their name, so they can be cached for a year.
+  location /assets/ {
+    try_files $uri =404;
+    expires 1y;
+    gzip on;
+    gzip_types text/css text/javascript application/javascript;
+  }
+
+  # Single-page app: any other path (like /p/<id>) gets index.html.
+  # index.html must never be cached, so new deploys show up at once.
+  location / {
+    try_files $uri /index.html;
+    expires -1;
+  }
+}
