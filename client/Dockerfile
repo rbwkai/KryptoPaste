@@ -12,6 +12,8 @@ RUN npm run build -w client
 
 # ---- Stage 2: serve it with nginx (runs as a non-root user on port 8080) ----
 FROM nginxinc/nginx-unprivileged:stable-alpine
+ARG GIT_SHA=dev
+LABEL org.opencontainers.image.revision=$GIT_SHA
 # Where the API lives. Compose and Kubernetes both call it "api".
 ENV API_UPSTREAM=http://api:6209
 # nginx fills ${API_UPSTREAM} into this template when the container starts.

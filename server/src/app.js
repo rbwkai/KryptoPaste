@@ -15,10 +15,17 @@ export function createApp({ trustProxy = 0 } = {}) {
   app.use(securityHeaders);
   app.use(requestLogger);
 
-  // Probes and uptime pingers must never be rate limited, so they come first.
   app.get('/api/health', (_req, res) => {
-    res.json({ status: 'ok' });
+    res.json({ status: 'ok', version: process.env.GIT_SHA ?? 'dev' });
   });
+
+  // TEMPORARY (step 14): shows what the proxies in front of us tell us about the
+  // caller, so we can pick the right TRUST_PROXY number. Off unless DEBUG_PROXY=1.
+  if (process.env.DEBUG_PROXY === '1') {
+    app.get('/api/_proxy', (req, res) => {
+      res.json({ xff: req.headers['x-forwarded-for'] ?? null, ip: req.ip });
+    });
+  }
 
   app.get('/api/ready', (_req, res) => {
     const ready = mongoose.connection.readyState === 1;

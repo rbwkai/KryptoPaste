@@ -25,6 +25,13 @@ npm run dev                          # API on :6209
 npm run dev:client                   # frontend on :5173 (second terminal)
 ```
 
+Or run both containers (needs Docker and `server/.env`):
+
+```bash
+docker compose up --build
+# open http://localhost:8080
+```
+
 ## Project layout
 
 - `server/` Express API

@@ -98,3 +98,26 @@ A running notebook. One section per step.
 - **Zero-knowledge is checkable.** DevTools, Network tab: no request ever contains the key.
 - **Delete token not shown yet,** because the delete endpoint does not exist (steps 8 and 9).
 - **Minimal tooling choice:** no React ESLint plugin, so we ignore capitalised "unused" names in client files. We can add the plugin later for hook rules.
+
+## Step 12: Docker
+
+- **Image vs container:** an image is the frozen package. A container is a running copy of it. We ship images, never "files on a server".
+- **Same everywhere:** the Node version, OS libraries and nginx config are inside the image. Laptop, CI and production run the same thing.
+- **Layer cache:** each Dockerfile line is a cached layer. Copy `package.json` and install dependencies BEFORE copying the source code, so editing code does not reinstall everything.
+- **Multi-stage builds:** build tools stay in stage 1. The final image holds only what runs. Smaller, faster, and less for an attacker to use.
+- **Build context:** we build from the repo root because the project is a monorepo with one lock file. `.dockerignore` keeps `node_modules`, `.git` and `.env` out of the build.
+- **Never bake secrets into images.** Anyone who gets the image gets the secret. `.env` is excluded and passed at run time (`env_file`, later Kubernetes Secrets and Render env vars).
+- **Non-root:** if an attacker breaks into the app, they are an ordinary user, not root. Also `cap_drop: ALL`, `no-new-privileges`, and a read-only filesystem for the API.
+- **PID 1 and signals:** `docker stop` sends SIGTERM to the main process. Our graceful shutdown from step 4 handles it. `init: true` adds a tiny init process that cleans up child processes.
+- **HEALTHCHECK:** Docker marks a container healthy or unhealthy. Compose `depends_on: service_healthy` makes `web` wait for `api`. We check liveness only, so a database blip does not restart the container.
+- **Compose networking:** services reach each other by service name (`http://api:3000`). The same name works in Kubernetes, which is why `API_UPSTREAM` defaults to it.
+- **Ports bound to 127.0.0.1:** `127.0.0.1:8080:8080` means only your own machine can reach it. Plain `8080:8080` would open it to your whole network.
+- **nginx gotcha:** `add_header` inside a `location` REPLACES the headers from the `server` level instead of adding to them. We use `expires` in locations, which does not have this problem.
+- **nginx privacy:** the default access log stores IP + URL, which would link visitors to paste ids. We turned it off.
+- **Caching rules:** files in `/assets/` have a content hash in their name, so they can be cached for a year. `index.html` must never be cached, otherwise users keep seeing an old version after a deploy.
+- **SPA fallback:** `try_files $uri /index.html` returns the app for paths like `/p/<id>`. Without it, refreshing a paste link would be a 404.
+- **Config at start time:** nginx images fill `${VARIABLES}` into `/etc/nginx/templates/*.template` when the container starts. One image can run anywhere with a different `API_UPSTREAM`.
+- **nginx resolves `api` at startup.** If the API is not reachable yet, nginx refuses to start. Compose handles it with `depends_on`.
+- **Three CSPs, one policy:** helmet (API), Vite preview config and nginx all hold the same rules. If you change one, change all. The nginx one protects the real page.
+- **CI smoke tests:** building is not enough. We start the containers and check that they work (API reaches a database, nginx serves the CSP).
+- **Pinned tags:** `node:22-alpine` and `stable-alpine` are moving tags. Dependabot (step 16) will help us update them safely.
