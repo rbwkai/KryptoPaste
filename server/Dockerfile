@@ -12,7 +12,10 @@ RUN npm ci --omit=dev --ignore-scripts -w server
 
 # ---- Stage 2: the small final image ----
 FROM node:22-alpine
-ENV NODE_ENV=production
+ARG GIT_SHA=dev
+ENV NODE_ENV=production \
+    GIT_SHA=$GIT_SHA
+LABEL org.opencontainers.image.revision=$GIT_SHA
 WORKDIR /app
 COPY --from=deps /app/node_modules node_modules
 COPY server/package.json server/
