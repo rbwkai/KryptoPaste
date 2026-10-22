@@ -16,6 +16,13 @@ ARG GIT_SHA=dev
 ENV NODE_ENV=production \
     GIT_SHA=$GIT_SHA
 LABEL org.opencontainers.image.revision=$GIT_SHA
+# Remove tools we never run. npm, corepack and yarn ship inside the Node image and
+# bundle many small packages that scanners flag. Also pull in fixed Alpine packages.
+RUN apk upgrade --no-cache \
+ && rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \
+           /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack \
+           /usr/local/bin/yarn /usr/local/bin/yarnpkg /opt/yarn-*
+
 WORKDIR /app
 COPY --from=deps /app/node_modules node_modules
 COPY server/package.json server/
